@@ -74,20 +74,11 @@ struct HTTP_FORM{
 	char http_version[FILESIZE];
 };
 
-struct ws_conf{
-	int port_num;
-	char web_root[FILESIZE];
-	char defualt[FILESIZE];
-	// content type
-	char content_ext[FILE_NUM+1][FILESIZE];  //  content type [0] column
-	char content_enc[FILE_NUM+1][FILESIZE];	// content type [1] column
-};
-
 // set socket and bind for connection
 int socket_bind(int port_num, int client_num){
 
-	struct sockaddr_in server;
-	int sock;
+  struct sockaddr_in server;
+  int sock;
 
   server.sin_family = AF_INET;
   server.sin_port = htons(port_num);
@@ -96,28 +87,28 @@ int socket_bind(int port_num, int client_num){
   // make it zero the sockaddr_in struct for the right size
   memset(server.sin_zero, '\0', sizeof(server.sin_zero));
 
- if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-     perror("server socket: ");
-     exit(-1);
-   }
- puts("socket created\n");
+	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+	     perror("server socket: ");
+	     exit(-1);
+	   }
+	 puts("socket created\n");
 
-if ((bind(sock, (struct sockaddr *)&server, sizeof(struct sockaddr_in))) < 0) {
-    perror("bind : ");
-    exit(-1);
-  }
-puts("bind done\n");
+	if ((bind(sock, (struct sockaddr *)&server, sizeof(struct sockaddr_in))) < 0) {
+	    perror("bind : ");
+	    exit(-1);
+	  }
+	puts("bind done\n");
 
-// listen part, make it listen to number of clients, client_num : max number of cients
-if((listen(sock, client_num)) < 0){
-	perror("listen failed\n");
-	exit(-1);
-}
+	// listen part, make it listen to number of clients, client_num : max number of cients
+	if((listen(sock, client_num)) < 0){
+		perror("listen failed\n");
+		exit(-1);
+	}
 
 return sock;
 }
 
-void read_conf(struct ws_conf *config){
+void read_conf(){
 	char *root_path;
 	char *curr;
 	char *read_param;
@@ -158,7 +149,6 @@ void read_conf(struct ws_conf *config){
 				curr = strtok_r(read, " ",&read_param);
 				char *token = strtok(read_param," ");
 				while(token != NULL){
-					printf("token: %s %d\n",token,strlen(token));
 					if(count_index == 1){
 						strcpy(glob_default,token);
 					}
@@ -234,19 +224,51 @@ void read_conf(struct ws_conf *config){
 }
 
 int main(int argc, char ** argv){
-
 	int socket_desc, client_sock, c, read_size;
+	int thread_id;
 	struct sockaddr_in client;
 	unsigned int sockaddr_len = sizeof(struct sockaddr_in);
-	struct ws_conf config;
 
-	// set up server
-	//setup_server
-	printf("start!\n");
-	read_conf(&config);
+	// read and set variable by reading information from ws.conf
+	read_conf();
 
 	// set socket
-	// socket_desc = socket_bind();
+	socket_desc = socket_bind(glob_port_num,THREAD_NUM);
+
+	while(1){
+		
+		// accpet and listen
+		if((client_sock = accept(socket_desc,(struct sockaddr*)&client,(socklen_t*)&c)) < 0)
+		{
+			perror("accept failed\n");
+			exit(1);
+		}
+
+		thread_id = fork();
+		if(thread_id < 0 ){
+			perror("fork failed\n");
+			exit(1);
+		}
+
+		/*child thread will do the task, so can close the initial socket*/
+		if(thread_id. == 0){
+			close(socket_desc);
+			// request part implementation
+			//client handler(client)
+
+			exit(0);
+		}
+
+		/* parent thread will wait and accept new client, 
+		don't need active socket for all*/
+		if(thread_id > 0){
+			close(client_sock);
+	        waitpid(0, NULL, WNOHANG);
+		}
+
+
+	}// end of while
+
 
 
 
