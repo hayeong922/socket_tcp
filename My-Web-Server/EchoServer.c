@@ -42,6 +42,25 @@ int glob_port_num;
 char *glob_web_root;
 char *glob_default;
 
+//extension
+char *glob_ext_html;
+char *glob_ext_htm;
+char *glob_ext_txt;
+char *glob_ext_png;
+char *glob_ext_gif;
+char *glob_ext_jpg;
+char *glob_ext_css;
+char *glob_ext_icon;
+
+//encodings
+char *glob_ent_html;
+char *glob_ent_htm;
+char *glob_ent_txt;
+char *glob_ent_png;
+char *glob_ent_gif;
+char *glob_ent_jpg;
+char *glob_ent_css;
+char *glob_ent_icon;
 
 struct HTTP_FORM{
 	char method[FILESIZE];
@@ -137,22 +156,58 @@ void read_conf(struct ws_conf *config){
 				strcpy(glob_default,test);
 				break;
 			case HTML:
+				curr = strtok_r(read, " ",&read_param);
+				strcpy(glob_ext_html,curr);
+				test = strtok(saveptr,"\n");
+				strcpy(glob_ent_html,test);
 				break;
 			case HTM:
+				curr = strtok_r(read, " ",&read_param);
+				strcpy(glob_ext_htm,curr);
+				test = strtok(saveptr,"\n");
+				strcpy(glob_ent_htm,test);
 				break;
 			case TXT:
+				curr = strtok_r(read, " ",&read_param);
+				strcpy(glob_ext_txt,curr);
+				test = strtok(saveptr,"\n");
+				strcpy(glob_ent_txt,test);
 				break;
 			case PNG:
+				curr = strtok_r(read, " ",&read_param);
+				strcpy(glob_ext_png,curr);
+				test = strtok(saveptr,"\n");
+				strcpy(glob_ent_png,test);
 				break;
 			case GIF:
+				curr = strtok_r(read, " ",&read_param);
+				strcpy(glob_ext_gif,curr);
+				test = strtok(saveptr,"\n");
+				strcpy(glob_ent_gif,test);
 				break;
 			case JPG:
+				curr = strtok_r(read, " ",&read_param);
+				strcpy(glob_ext_jpg,curr);
+				test = strtok(saveptr,"\n");
+				strcpy(glob_ent_jpg,test);
 				break;
 			case CSS:
+				curr = strtok_r(read, " ",&read_param);
+				strcpy(glob_ext_css,curr);
+				test = strtok(saveptr,"\n");
+				strcpy(glob_ent_css,test);
 				break;
 			case JS:
+				curr = strtok_r(read, " ",&read_param);
+				strcpy(glob_ext_js,curr);
+				test = strtok(saveptr,"\n");
+				strcpy(glob_ent_js,test);
 				break;
 			case ICON:
+				curr = strtok_r(read, " ",&read_param);
+				strcpy(glob_ext_icon,curr);
+				test = strtok(saveptr,"\n");
+				strcpy(glob_ent_icon,test);
 				break;
 
 		}
