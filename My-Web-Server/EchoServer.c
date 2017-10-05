@@ -39,28 +39,34 @@
 #define ICON 16
 
 int glob_port_num;
-char *glob_web_root;
-char *glob_default;
+char glob_web_root[FILESIZE];
+char glob_default[FILESIZE];
+char glob_default_2[FILESIZE];
+char glob_default_3[FILESIZE];
+
 
 //extension
-char *glob_ext_html;
-char *glob_ext_htm;
-char *glob_ext_txt;
-char *glob_ext_png;
-char *glob_ext_gif;
-char *glob_ext_jpg;
-char *glob_ext_css;
-char *glob_ext_icon;
+char glob_ext_html[FILESIZE];
+char glob_ext_htm[FILESIZE];
+char glob_ext_txt[FILESIZE];
+char glob_ext_png[FILESIZE];
+char glob_ext_gif[FILESIZE];
+char glob_ext_jpg[FILESIZE];
+char glob_ext_css[FILESIZE];
+char glob_ext_icon[FILESIZE];
+char glob_ext_js[FILESIZE];
 
 //encodings
-char *glob_ent_html;
-char *glob_ent_htm;
-char *glob_ent_txt;
-char *glob_ent_png;
-char *glob_ent_gif;
-char *glob_ent_jpg;
-char *glob_ent_css;
-char *glob_ent_icon;
+char glob_enc_html[FILESIZE];
+char glob_enc_htm[FILESIZE];
+char glob_enc_txt[FILESIZE];
+char glob_enc_png[FILESIZE];
+char glob_enc_gif[FILESIZE];
+char glob_enc_jpg[FILESIZE];
+char glob_enc_css[FILESIZE];
+char glob_enc_icon[FILESIZE];
+char glob_enc_js[FILESIZE];
+
 
 struct HTTP_FORM{
 	char method[FILESIZE];
@@ -120,12 +126,12 @@ void read_conf(struct ws_conf *config){
 	char temp_path[MAXBUFFSIZE+1];
 	char read[FILESIZE];
 	int count = 1;
+	int count_index =1;
+	char *token;
 
 	root_path = getcwd(buff,MAXBUFFSIZE);
 	strcpy(temp_path,root_path);
 	strcat(temp_path,"/ws.conf");
-	printf("temp_path:%s\n",temp_path);
-
 
 	//ws.conf file
 	FILE *file;
@@ -140,83 +146,91 @@ void read_conf(struct ws_conf *config){
 		switch(count){
 			case PORT_NUM:
 				curr = strtok_r(read, " ",&read_param);
-				printf("pot number: %s\n", read_param);
+				printf("port number: %s\n", read_param);
 				glob_port_num = atoi(read_param);
 				break;
 			case WEB_ROOT:
 				curr = strtok_r(read, " ",&read_param);
-				test = strtok(saveptr,"\"");
-				printf("test: %s %d\n",test,strlen(test));
+				test = strtok(read_param,"\"");
 				strcpy(glob_web_root,test);
 				break;
 			case DEFAULT:
 				curr = strtok_r(read, " ",&read_param);
-				test = strtok(saveptr,"\n");
-				printf("test: %s %d\n",test,strlen(test));
-				strcpy(glob_default,test);
+				char *token = strtok(read_param," ");
+				while(token != NULL){
+					printf("token: %s %d\n",token,strlen(token));
+					if(count_index == 1){
+						strcpy(glob_default,token);
+					}
+					if(count_index == 2){
+						strcpy(glob_default_2,token);
+					}
+					if(count_index == 3){
+						char *f = strtok(token,"\n"); // remove new line
+						strcpy(glob_default_3,f);
+					}
+					token = strtok(NULL," ");
+					count_index++;
+				}
 				break;
 			case HTML:
 				curr = strtok_r(read, " ",&read_param);
 				strcpy(glob_ext_html,curr);
-				test = strtok(saveptr,"\n");
-				strcpy(glob_ent_html,test);
+				test = strtok(read_param,"\n");
+				strcpy(glob_enc_html,test);
 				break;
 			case HTM:
 				curr = strtok_r(read, " ",&read_param);
 				strcpy(glob_ext_htm,curr);
-				test = strtok(saveptr,"\n");
-				strcpy(glob_ent_htm,test);
+				test = strtok(read_param,"\n");
+				strcpy(glob_enc_htm,test);
 				break;
 			case TXT:
 				curr = strtok_r(read, " ",&read_param);
 				strcpy(glob_ext_txt,curr);
-				test = strtok(saveptr,"\n");
-				strcpy(glob_ent_txt,test);
+				test = strtok(read_param,"\n");
+				strcpy(glob_enc_txt,test);
 				break;
 			case PNG:
 				curr = strtok_r(read, " ",&read_param);
 				strcpy(glob_ext_png,curr);
-				test = strtok(saveptr,"\n");
-				strcpy(glob_ent_png,test);
+				test = strtok(read_param,"\n");
+				strcpy(glob_enc_png,test);
 				break;
 			case GIF:
 				curr = strtok_r(read, " ",&read_param);
 				strcpy(glob_ext_gif,curr);
-				test = strtok(saveptr,"\n");
-				strcpy(glob_ent_gif,test);
+				test = strtok(read_param,"\n");
+				strcpy(glob_enc_gif,test);
 				break;
 			case JPG:
 				curr = strtok_r(read, " ",&read_param);
 				strcpy(glob_ext_jpg,curr);
-				test = strtok(saveptr,"\n");
-				strcpy(glob_ent_jpg,test);
+				test = strtok(read_param,"\n");
+				strcpy(glob_enc_jpg,test);
 				break;
 			case CSS:
 				curr = strtok_r(read, " ",&read_param);
 				strcpy(glob_ext_css,curr);
-				test = strtok(saveptr,"\n");
-				strcpy(glob_ent_css,test);
+				test = strtok(read_param,"\n");
+				strcpy(glob_enc_css,test);
 				break;
 			case JS:
 				curr = strtok_r(read, " ",&read_param);
 				strcpy(glob_ext_js,curr);
-				test = strtok(saveptr,"\n");
-				strcpy(glob_ent_js,test);
+				test = strtok(read_param,"\n");
+				strcpy(glob_enc_js,test);
 				break;
 			case ICON:
 				curr = strtok_r(read, " ",&read_param);
 				strcpy(glob_ext_icon,curr);
-				test = strtok(saveptr,"\n");
-				strcpy(glob_ent_icon,test);
+				test = strtok(read_param,"\n");
+				strcpy(glob_enc_icon,test);
 				break;
-
 		}
-			
-
 		count++;
 	}
 	fclose(file);
-
 }
 
 int main(int argc, char ** argv){
@@ -231,12 +245,8 @@ int main(int argc, char ** argv){
 	printf("start!\n");
 	read_conf(&config);
 
-
-
-
-
 	// set socket
-	//socket_desc = socket_bind()
+	// socket_desc = socket_bind();
 
 
 
