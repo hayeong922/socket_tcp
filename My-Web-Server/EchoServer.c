@@ -39,6 +39,9 @@
 #define ICON 16
 
 int glob_port_num;
+char *glob_web_root;
+char *glob_default;
+
 
 struct HTTP_FORM{
 	char method[FILESIZE];
@@ -87,13 +90,13 @@ if((listen(sock, client_num)) < 0){
 }
 
 return sock;
-
 }
 
 void read_conf(struct ws_conf *config){
 	char *root_path;
 	char *curr;
 	char *read_param;
+	char *test;
 	char buff[MAXBUFFSIZE+1];
 	char temp_path[MAXBUFFSIZE+1];
 	char read[FILESIZE];
@@ -122,8 +125,16 @@ void read_conf(struct ws_conf *config){
 				glob_port_num = atoi(read_param);
 				break;
 			case WEB_ROOT:
+				curr = strtok_r(read, " ",&read_param);
+				test = strtok(saveptr,"\"");
+				printf("test: %s %d\n",test,strlen(test));
+				strcpy(glob_web_root,test);
 				break;
 			case DEFAULT:
+				curr = strtok_r(read, " ",&read_param);
+				test = strtok(saveptr,"\n");
+				printf("test: %s %d\n",test,strlen(test));
+				strcpy(glob_default,test);
 				break;
 			case HTML:
 				break;
