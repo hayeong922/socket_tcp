@@ -21,14 +21,39 @@
 #define MAXBUFFSIZE 1024
 
 #define THREAD_NUM 4
-#define FILESIZE 100
+#define FILESIZE 200
+#define FILE_NUM 9
 
+// this is for setting things for server
+#define PORT_NUM 2
+#define WEB_ROOT 4
+#define DEFAULT 6
+#define HTML 8
+#define HTM 9
+#define TXT 10
+#define PNG 11
+#define GIF 12
+#define JPG 13
+#define CSS 14
+#define JS 15
+#define ICON 16
+
+int glob_port_num;
 
 struct HTTP_FORM{
 	char method[FILESIZE];
 	char URL[FILESIZE];
 	char http_version[FILESIZE];
-}
+};
+
+struct ws_conf{
+	int port_num;
+	char web_root[FILESIZE];
+	char defualt[FILESIZE];
+	// content type
+	char content_ext[FILE_NUM+1][FILESIZE];  //  content type [0] column
+	char content_enc[FILE_NUM+1][FILESIZE];	// content type [1] column
+};
 
 // set socket and bind for connection
 int socket_bind(int port_num, int client_num){
@@ -65,15 +90,82 @@ return sock;
 
 }
 
+void read_conf(struct ws_conf *config){
+	char *root_path;
+	char *curr;
+	char *read_param;
+	char buff[MAXBUFFSIZE+1];
+	char temp_path[MAXBUFFSIZE+1];
+	char read[FILESIZE];
+	int count = 1;
+
+	root_path = getcwd(buff,MAXBUFFSIZE);
+	strcpy(temp_path,root_path);
+	strcat(temp_path,"/ws.conf");
+	printf("temp_path:%s\n",temp_path);
+
+
+	//ws.conf file
+	FILE *file;
+	file = fopen(temp_path,"r");
+	if(file == NULL){
+		perror("cannot read file\n");
+		exit(-1);
+	}
+
+	while(fgets(read,FILESIZE,file) != NULL)
+	{
+		switch(count){
+			case PORT_NUM:
+				curr = strtok_r(read, " ",&read_param);
+				printf("pot number: %s\n", read_param);
+				glob_port_num = atoi(read_param);
+				break;
+			case WEB_ROOT:
+				break;
+			case DEFAULT:
+				break;
+			case HTML:
+				break;
+			case HTM:
+				break;
+			case TXT:
+				break;
+			case PNG:
+				break;
+			case GIF:
+				break;
+			case JPG:
+				break;
+			case CSS:
+				break;
+			case JS:
+				break;
+			case ICON:
+				break;
+
+		}
+			
+
+		count++;
+	}
+	fclose(file);
+
+}
 
 int main(int argc, char ** argv){
 
 	int socket_desc, client_sock, c, read_size;
 	struct sockaddr_in client;
 	unsigned int sockaddr_len = sizeof(struct sockaddr_in);
+	struct ws_conf config;
 
 	// set up server
 	//setup_server
+	printf("start!\n");
+	read_conf(&config);
+
+
 
 
 
